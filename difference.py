@@ -23,18 +23,30 @@ def min_difference(u,r,R):
 
     for i in range(len(r)+2):
         for j in range(len(u)+2):
-            if i < 2:
+            if i < 2 and j < 2:
+                M[i][j] = 0
                 continue
-            if j == 0:
+            elif j == 0:
                 M[i][j] = r[i-2]
-                M[0][j] = u[j-2]
+            elif i == 0:
+                M[i][j] = u[j-2]
+            else:
+                M[i][j] = 0
+
+    '''
+    for loop:
+    if M[0][j] == M[i][0]:
+    M[i][j] == M[i-1][j-1]
+    Else:
+    M[i][j] == max(M[i-1][j], M[i][j-1], M[i-1][j-1])+1
+    '''
 
 
 
     print("printing Matrix")
     for row in M:
         for val in row:
-            print'{:4}'.format(val),
+            print'{:1}'.format(val),
         print
     # To get the resemblance between two letters, use code like this:
     # difference = R['a']['b']
