@@ -3,8 +3,8 @@
 '''
 Assignment 2: Search String Replacement
 
-Team Number: 
-Student Names: 
+Team Number: 44
+Student Names: Erik Lövgren, Erik Ohlsson
 '''
 import unittest
 # Sample matrix provided by us:
@@ -19,8 +19,26 @@ def min_difference(u,r,R):
     Example: Let R be the resemblance matrix where every change and skip costs 1
              min_difference("dinamck","dynamic",R) ==> 3
     """
+    M = [[None for i in range (len(r)+2)]for j in range (len(u)+2)]
+
+    for i in range(len(r)+2):
+        for j in range(len(u)+2):
+            if i < 2:
+                continue
+            if j == 0:
+                M[i][j] = r[i-2]
+                M[0][j] = u[j-2]
+
+
+
+    print("printing Matrix")
+    for row in M:
+        for val in row:
+            print'{:4}'.format(val),
+        print
     # To get the resemblance between two letters, use code like this:
     # difference = R['a']['b']
+
 
 # Solution to part c:
 def min_difference_align(u,r,R):
