@@ -21,6 +21,8 @@ def min_difference(u,r,R):
     """
     M = [[None for i in range (len(r)+2)]for j in range (len(u)+2)]
 
+    # FFS!!! I = ROW! J = COLUMN!
+    # OBS! Måste lägga till dash: - om len(u) != len(r)
     for i in range(len(r)+2):
         for j in range(len(u)+2):
             if i < 2 and j < 2:
@@ -30,24 +32,29 @@ def min_difference(u,r,R):
                 M[i][j] = r[i-2]
             elif i == 0:
                 M[i][j] = u[j-2]
+            elif i == 1:
+                M[i][j] = j-1
+            elif j == 1:
+                M[i][j] = i-1
             else:
                 M[i][j] = 0
 
     '''
-    for loop:
-    if M[0][j] == M[i][0]:
-    M[i][j] == M[i-1][j-1]
-    Else:
-    M[i][j] == max(M[i-1][j], M[i][j-1], M[i-1][j-1])+1
+    for i
+    for j
+    ignorera 2 första rader/kolumner
+    om M[0][j] == M[i][0](om bokstav = bokstav), sätt om cellen till i-1 j-1
+    annars sätt cellen till minimum av ovanför/bakom/ovanförbakom!
     '''
-
-
 
     print("printing Matrix")
     for row in M:
         for val in row:
-            print'{:1}'.format(val),
+            print'{:2}'.format(val),
         print
+
+    print "result =", M[-1][-1]
+    return M[-1][-1]
     # To get the resemblance between two letters, use code like this:
     # difference = R['a']['b']
 
@@ -123,7 +130,52 @@ class MinDifferenceTest(unittest.TestCase):
                     ) for a in alphabet ] )
         # Warning: we may (read: 'will') use another matrix!
         self.assertEqual(min_difference("dinamck","dynamic",R),3)
-    def test_align_sanity(self):
+    def test_diff_one_equal(self):
+        alphabet = ascii_lowercase + '-'
+        R = dict( [ (
+                     a,
+                     dict( [ ( b, (0 if a==b else 1) ) for b in alphabet ] )
+                    ) for a in alphabet ] )
+        # Warning: we may (read: 'will') use another matrix!
+        self.assertEqual(min_difference("a","a",R),0)
+
+    def test_diff_one_unequal(self):
+        alphabet = ascii_lowercase + '-'
+        R = dict( [ (
+                     a,
+                     dict( [ ( b, (0 if a==b else 1) ) for b in alphabet ] )
+                    ) for a in alphabet ] )
+        # Warning: we may (read: 'will') use another matrix!
+        self.assertEqual(min_difference("b","a",R),1)
+
+    def test_diff_calle_banan(self):
+        alphabet = ascii_lowercase + '-'
+        R = dict( [ (
+                     a,
+                     dict( [ ( b, (0 if a==b else 1) ) for b in alphabet ] )
+                    ) for a in alphabet ] )
+        # Warning: we may (read: 'will') use another matrix!
+        self.assertEqual(min_difference("calle","banan",R),4)
+
+    def test_diff_all_unequal(self):
+        alphabet = ascii_lowercase + '-'
+        R = dict( [ (
+                     a,
+                     dict( [ ( b, (0 if a==b else 1) ) for b in alphabet ] )
+                    ) for a in alphabet ] )
+        # Warning: we may (read: 'will') use another matrix!
+        self.assertEqual(min_difference("aaaaaaaaaaaaaaa","bbbbbbbbbbbbbbb",R),15)
+
+    def test_diff_all_equal(self):
+        alphabet = ascii_lowercase + '-'
+        R = dict( [ (
+                     a,
+                     dict( [ ( b, (0 if a==b else 1) ) for b in alphabet ] )
+                    ) for a in alphabet ] )
+        # Warning: we may (read: 'will') use another matrix!
+        self.assertEqual(min_difference("aaaaaaaaaaaaaaa","aaaaaaaaaaaaaaa",R),0)
+
+    def est_align_sanity(self):
         """Simple alignment
 
         Passes if the returned alignment matches the expected one.
@@ -139,3 +191,12 @@ class MinDifferenceTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+"""    for i in range(len(r)+2):
+        for j in range(len(u)+2):
+            if i < 2 or j < 2:
+                continue
+            if i == j and M[0][j] == M[i][0]:
+                M[i][j] = M[i-1][j-1]
+            else:
+                M[i][j] = min(M[i-1][j], M[i][j-1], M[i-1][j-1])+1"""
