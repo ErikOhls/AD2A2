@@ -26,18 +26,18 @@ def min_difference(u,r,R):
     for i in range(len(r)+2):
         for j in range(len(u)+2):
             if i < 2 and j < 2:
-                M[i][j] = 0
+                M[i][j] = 0      # Set first 2x2 to 0
                 continue
             elif j == 0:
-                M[i][j] = r[i-2]
+                M[i][j] = r[i-2] # Set row labels
             elif i == 0:
-                M[i][j] = u[j-2]
+                M[i][j] = u[j-2] # Set column labels
             elif i == 1:
-                M[i][j] = j-1
+                M[i][j] = j-1    # Set first column values
             elif j == 1:
-                M[i][j] = i-1
+                M[i][j] = i-1    # Set first row values
             else:
-                M[i][j] = 0
+                M[i][j] = 0      # initialize remaining matrix
 
     '''
     for i
