@@ -19,6 +19,27 @@ def min_difference(u,r,R):
     Example: Let R be the resemblance matrix where every change and skip costs 1
              min_difference("dinamck","dynamic",R) ==> 3
     """
+    M = initialize_matrix(u,r)
+    M = construct_weight_1_matrix(u,r,M,R)
+
+    print "TESTING SHIT"
+    print M[0][2], M[2][0]
+    print R[M[0][2]][M[2][0]]
+    if R[M[0][2]][M[2][0]]:
+        print "TRUE"
+
+    print("printing Matrix")
+    for row in M:
+        for val in row:
+            print'{:2}'.format(val),
+        print
+
+    print "result =", M[-1][-1]
+    return M[-1][-1]
+    # To get the resemblance between two letters, use code like this:
+    # difference = R['a']['b']
+
+def initialize_matrix(u,r):
     M = [[None for i in range (len(r)+2)]for j in range (len(u)+2)]
 
     # FFS!!! I = ROW! J = COLUMN!
@@ -39,25 +60,34 @@ def min_difference(u,r,R):
             else:
                 M[i][j] = 0      # initialize remaining matrix
 
-    '''
-    for i
-    for j
-    ignorera 2 första rader/kolumner
-    om M[0][j] == M[i][0](om bokstav = bokstav), sätt om cellen till i-1 j-1
-    annars sätt cellen till minimum av ovanför/bakom/ovanförbakom!
-    '''
+    return M
 
-    print("printing Matrix")
-    for row in M:
-        for val in row:
-            print'{:2}'.format(val),
-        print
 
-    print "result =", M[-1][-1]
-    return M[-1][-1]
-    # To get the resemblance between two letters, use code like this:
-    # difference = R['a']['b']
+def construct_weight_1_matrix(u,r,M,R):
+    for i in range(len(r)+2):
+        for j in range(len(u)+2):
+            if i < 2 or j < 2:                    # Ignore first 2 rows and columns
+                continue
+            differance = R[M[0][j]][M[i][0]]
+            if i == j and not differance:         # If current row/column label match
+                M[i][j] = M[i-1][j-1]
+            else:
+                M[i][j] = min(M[i-1][j], M[i][j-1], M[i-1][j-1])+1
+    return M
 
+def construct_weight_2_matrix(u,r,M,R):
+    for i in range(len(r)+2):
+        for j in range(len(u)+2):
+            if i < 2 or j < 2:                 # Ignore first 2 rows and columns
+                continue
+            #if i == j and M[0][j] == M[i][0]:  # If current row/column label match
+            elif  M[0][j] == M[i][0]:  # If current row/column label match
+                M[i][j] = M[i-1][j-1]
+            elif i ==j:
+                M[i][j] = min(M[i-1][j], M[i][j-1], M[i-1][j-1])+2
+            else:
+                M[i][j] = min(M[i-1][j], M[i][j-1], M[i-1][j-1])+1
+    return M
 
 # Solution to part c:
 def min_difference_align(u,r,R):
@@ -191,12 +221,3 @@ class MinDifferenceTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-"""    for i in range(len(r)+2):
-        for j in range(len(u)+2):
-            if i < 2 or j < 2:
-                continue
-            if i == j and M[0][j] == M[i][0]:
-                M[i][j] = M[i-1][j-1]
-            else:
-                M[i][j] = min(M[i-1][j], M[i][j-1], M[i-1][j-1])+1"""
