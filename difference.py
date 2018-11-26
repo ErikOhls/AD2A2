@@ -365,9 +365,9 @@ class MinDifferenceTest(unittest.TestCase):
     
 
         diff, u, r = min_difference_align("ejodl", "jwavztx", R)
-        self.asserEqual(diff, 149)
-        self.asserEqual(u, 'e-jo-dl')
-        self.asserEqual(u, 'jwavztx')
+        self.assertEqual(diff, 149)
+        self.assertEqual(u, 'e-jo-dl')
+        self.assertEqual(u, 'jwavztx')
 
 if __name__ == '__main__':
     unittest.main()
