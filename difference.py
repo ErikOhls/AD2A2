@@ -14,8 +14,9 @@ from string import ascii_lowercase
 def min_difference(u,r,R):
     """
     Sig:    string, string, int[0..|A|, 0..|A|] ==> int
-    Pre:
-    Post:
+    Pre:    u and r is arrays of any length. R is the resemblance matrix that \
+            holds the resemblance weight for each character in the alphabet.
+    Post:   returns the minimum resemblance cost between the two strings u and r.
     Example: Let R be the resemblance matrix where every change and skip costs 1
              min_difference("dinamck","dynamic",R) ==> 3
     """
@@ -45,8 +46,11 @@ def min_difference(u,r,R):
 def min_difference_align(u,r,R):
     """
     Sig:    string, string, int[0..|A|, 0..|A|] ==> int, string, string
-    Pre:
-    Post:
+    Pre:    u and r is arrays of any length. R is the resemblance matrix that \
+            holds the resemblance weight for each character in the alphabet.
+    Post:   returns two modified strings that shows the positioning of the minimum \
+            difference and the minimum resemolance cost of the string.\
+
     Example: Let R be the resemblance matrix where every change and skip costs 1
              min_difference_align("dinamck","dynamic",R) ==>
                                     3, "dinam-ck", "dynamic-"
@@ -65,6 +69,18 @@ def min_difference_align(u,r,R):
     return insert_dashes(u,r,R,M)
 
 def insert_dashes(u, r, R, M):
+        """
+        Sig:    string, string, int[0..|A|, 0..|A|] ==> int, string, string
+        Pre:    u and r is arrays of any length. R is the resemblance matrix that \
+                holds the resemblance cost for each character in the alphabet.
+        Post:   returns and the minimum resemolance cost of the string and two \
+                modified strings that shows the positioning of the minimum \
+                difference\
+
+        Example: Let R be the resemblance matrix where every change and skip costs 1
+                 min_difference_align("dinamck","dynamic",R) ==>
+                                        3, "dinam-ck", "dynamic-"
+        """
     do_print = True
     x = len(r)+1
     y = len(u)+1
@@ -72,6 +88,8 @@ def insert_dashes(u, r, R, M):
     u_dashed = ""
     r_dashed = ""
     while x > 1 or y > 1:
+    # ??????
+    # Variant x, y
         if (do_print): print "\nlooking at", M[0][x], M[y][0]
         print u_dashed
         print r_dashed
@@ -141,6 +159,8 @@ def insert_dashes(u, r, R, M):
         print r_dashed
     result = 0
 
+    # Invariant range(u_dashed)
+    # Variant length(u_dashed)-i
     for i in range(len(u_dashed)):
         result += R[u_dashed[i]][r_dashed[i]]
         if (do_print): print "R[", u_dashed[i], "][", r_dashed[i], "] = ", R[u_dashed[i]][r_dashed[i]]
@@ -152,7 +172,11 @@ def initialize_matrix(u,r,R):
     M = [[None for i in range (len(r)+2)] for j in range (len(u)+2)]
 
     for y in range(len(u)+2):
+    # Invariant range(len(u)+2)
+    # Variant length(u+2)-i
         for x in range(len(r)+2):
+        # Invariant range(len(r)+2)
+        # Variant length(r+2)-i
             if y < 2 and x < 2:
                 M[y][x] = 0      # Set first 2x2 to 0
                 continue
@@ -171,7 +195,11 @@ def initialize_matrix(u,r,R):
 
 def construct_weights(u,r,M,R):
     for y in range(len(u)+2):
+    # Invariant range(len(u)+2)
+    # Variant length(u+2)-i
         for x in range(len(r)+2):
+        # Invariant range(len(r)+2)
+        # Variant length(r+2)-i
             if y < 2 or x < 2: # Ignore first 2 rows and columns
                 continue
             M[y][x] = min(M[y-1][x] + R[u[y-2]]['-'], M[y][x-1] + R['-'][r[x-2]], M[y-1][x-1] + R[u[y-2]][r[x-2]])
