@@ -124,7 +124,6 @@ def insert_dashes(u, r, R, M):
     min_difference_align("dinamck","dynamic",R,M) ==>
     3, "dinam-ck", "dynamic-"
     """
-    do_print = True
     x = len(r)+1
     y = len(u)+1
 
@@ -133,13 +132,8 @@ def insert_dashes(u, r, R, M):
     while x > 1 or y > 1:
     # Invariant: 1
     # Variant: x, y
-        if (do_print): print "\nlooking at", M[0][x], M[y][0]
-        print u_dashed
-        print r_dashed
 
         if(x == 1):
-            if (do_print): print "REACHED LEFT"
-            if (do_print): print "adding dash to:", u
             y = y-1
             r_dashed = "-" + r_dashed
             u_dashed = u[-1] + u_dashed
@@ -147,8 +141,6 @@ def insert_dashes(u, r, R, M):
 
 
         elif (y == 1):
-            if (do_print): print "REACHED TOP"
-            if (do_print): print "adding dash to:", r
             x = x-1
             u_dashed = "-" + u_dashed
             r_dashed = r[-1] + r_dashed
@@ -169,25 +161,17 @@ def insert_dashes(u, r, R, M):
             above = M[y-1][x]
             left = M[y][x-1]
 
-            if (do_print):
-                print "above:", dif_above, "left:", dif_left
-
-            if (do_print): print "left is:", left, "above is:", above
-
             if current == dif_above + above:
-                if (do_print): print "adding dash to:", r
                 y -= 1
                 r_dashed = "-" + r_dashed
                 u_dashed = u[-1] + u_dashed
                 u = u[:-1]
             elif current == dif_left + left:
-                if (do_print): print "adding dash to:", u
                 x -= 1
                 u_dashed = "-" + u_dashed
                 r_dashed = r[-1] + r_dashed
                 r = r[:-1]
             else:
-                if (do_print): print "adding to both"
                 u_dashed = u[-1] + u_dashed
                 u = u[:-1]
                 r_dashed = r[-1] + r_dashed
@@ -195,20 +179,12 @@ def insert_dashes(u, r, R, M):
                 x -= 1
                 y -= 1
 
-    if (do_print):
-        print "TEST", R['e']['a'], R['e']['w'], R['j']['w']
-        print "new strings:"
-        print u_dashed
-        print r_dashed
     result = 0
 
     for i in range(len(u_dashed)):
     # Invariant range(u_dashed)
     # Variant length(u_dashed)-i
         result += R[u_dashed[i]][r_dashed[i]]
-        if (do_print): print "R[", u_dashed[i], "][", r_dashed[i], "] = ", R[u_dashed[i]][r_dashed[i]]
-
-    if (do_print): print "REULTAT", result
     return result , u_dashed, r_dashed
 
 def print_matrix(M):
