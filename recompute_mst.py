@@ -23,6 +23,21 @@ try:
 except:
     have_plt = False
 
+class Node:
+    """
+    Class containing various information about nodes
+
+    Attributes:
+       node(int): Identifier
+       adj(list): List of adjacent nodes
+       visited(boolean): Switch intended to turn on once node is visited
+       parent(int): Identifier of parent node
+    """
+    node = ""
+    adj = None
+    edges = None
+    visited = False
+    parent = -1
 
 def update_MST_1(G, T, e, w):
     """
@@ -44,17 +59,88 @@ def update_MST_2(G, T, e, w):
     """
     (u, v) = e
     assert(e in G.edges() and e not in T.edges() and w < G[u][v]['weight'])
+    
+    print "EDGES ----------------"
+    vertices = list(T)
+    #print vertices
 
+    print T.edges()
 
-def update_MST_3(G, T, e, w):
-    """
-    Sig: graph G(V,E), graph T(V, E), edge e, int ==>
-    Pre:
-    Post:
-    Example: TestCase 3
-    """
-    (u, v) = e
-    assert(e in G.edges() and e in T.edges() and w < G[u][v]['weight'])
+    g_util = {}
+    for i in range(len(vertices)):
+        edges = []
+        tmp = list(T.edges(vertices[i]))
+        for j in range(len(T.edges(vertices[i]))):
+            (node, neighbour) = tmp[j]
+            edges.append(neighbour)
+        g_util[vertices[i]] = edges
+
+    #print g_util
+
+    cycle = []
+
+    cycle = get_cycle(g_util, u, v, cycle)
+    print cycle
+
+    T.add_edge(u, v, weight = w)
+
+    new_cycle = [None for i in range(len(cycle))]
+    for i in range(len(cycle)-1):
+        new_cycle[i] = (cycle[i], cycle[i+1])
+
+    new_cycle[-1] = (cycle[-1], cycle[0])
+
+    to_remove = new_cycle[0]
+    for edge in new_cycle:
+        if edge == new_cycle[0]:
+            prev = edge
+        elif T[prev[0]][prev[1]]['weight'] < T[edge[0]][edge[1]]['weight']:
+            to_remove = edge
+            prev = edge
+
+    x, y = to_remove[0], to_remove[1]
+
+    print new_cycle
+
+    '''
+    if T[cycle[0]][cycle[-1]]['weight'] > T[cycle[0]][cycle[1]]['weight']:
+        print cycle[0], cycle[-1], ":", T[cycle[0]][cycle[-1]]['weight']
+        print cycle[0], cycle[1], ":", T[cycle[0]][cycle[1]]['weight']
+        x, y = cycle[0], cycle[-1]
+
+    for i in range(len(cycle)-2):
+        if T[cycle[i]][cycle[i+1]]['weight'] > T[cycle[i+1]][cycle[i+2]]['weight']:
+            print cycle[i], cycle[i+1], ":", T[cycle[0]][cycle[-1]]['weight']
+            print cycle[i+1], cycle[i+2], ":", T[cycle[0]][cycle[-1]]['weight']
+            x, y = cycle[i], cycle[i+1]
+
+    if T[cycle[-2]][cycle[-1]]['weight'] > T[cycle[-1]][cycle[0]]['weight']:
+        print cycle[-2], cycle[-1], ":", T[cycle[0]][cycle[-1]]['weight']
+        print cycle[-1], cycle[0], ":", T[cycle[0]][cycle[-1]]['weight']
+        x, y = cycle[-2], cycle[-1]
+    '''
+    print x, y
+    T.remove_edge(x, y)
+
+    return T
+
+def get_cycle(G, start_node, end_node, cycle):
+    do_print = False
+    cycle = cycle + [start_node]
+    if do_print: print "Top:", start_node, cycle
+    if do_print: print "end_node:", end_node
+    if start_node == end_node:
+        if do_print: print "start node == end node"
+        return cycle
+
+    for vertex in G[start_node]:
+        if vertex not in cycle:
+            if do_print: print "vertex:", vertex
+            new_cycle = get_cycle(G, vertex, end_node, cycle)
+            if new_cycle:
+                return new_cycle
+
+    return None
 
 
 def update_MST_4(G, T, e, w):
@@ -102,7 +188,7 @@ class RecomputeMstTest(unittest.TestCase):
         # labels
         nx.draw_networkx_labels(G, pos, font_size = 20, font_family = 'sans-serif')
 
-    def test_mst1(self):
+    def est_mst1(self):
         """Sanity Test
 
         This is a simple sanity check for your function;
@@ -119,7 +205,7 @@ class RecomputeMstTest(unittest.TestCase):
             [('a', 'b'), ('a', 'c'), ('c', 'd'), ('c', 'e'), ('c', 'f')]
             )
 
-    def test_mst2(self):
+    def est_mst2(self):
         # TestCase 2: e in G.edges() and not e in T.edges() and
         #             w < G[u][v]['weight']
         G = self.create_graph()
@@ -131,7 +217,42 @@ class RecomputeMstTest(unittest.TestCase):
             [('a', 'b'), ('a', 'd'), ('c', 'd'), ('c', 'e'), ('c', 'f')]
             )
 
-    def test_mst3(self):
+    def test_mst2_fail(self):
+        def helper_function_weight(T, G):
+            weight = 0
+            for u, v in T.edges():
+                weight += G[u][v]['weight']
+            return weight
+
+
+        G = nx.complete_graph(5);
+
+        G[0][1]['weight'] = 26;
+        G[0][2]['weight'] = 24;
+        G[0][3]['weight'] = 94;
+        G[0][4]['weight'] = 97;
+        G[1][2]['weight'] = 83;
+        G[1][3]['weight'] = 100;
+        G[1][4]['weight'] = 76;
+        G[2][3]['weight'] = 10;
+        G[2][4]['weight'] = 14;
+        G[3][4]['weight'] = 7;
+
+
+        MST = nx.minimum_spanning_tree(G);
+
+        self.draw_mst(G, MST, 2)
+
+        update_MST_2(G.copy(), MST, (1, 3), 31);
+
+        print MST.edges()
+
+        G[1][3]['weight'] = 31
+
+        print "67?", helper_function_weight(MST, G)
+
+
+    def est_mst3(self):
         # TestCase 3: e in G.edges() and e in T.edges() and
         #             w < G[u][v]['weight']
         G = self.create_graph()
@@ -143,7 +264,7 @@ class RecomputeMstTest(unittest.TestCase):
             [('a', 'b'), ('a', 'c'), ('c', 'd'), ('c', 'e'), ('c', 'f')]
             )
 
-    def test_mst4(self):
+    def est_mst4(self):
         # TestCase 4: e in G.edges() and e in T.edges() and
         #             w > G[u][v]['weight']
         G = self.create_graph()
